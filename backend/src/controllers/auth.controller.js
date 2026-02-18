@@ -1,19 +1,32 @@
 import User from '../models/user.model.js';
+import bcrypt from 'bcryptjs';
+import { createAccessToken } from '../libs/jwt.js';
 
 export const register = async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const newUser = new User({ 
       username, 
       email, 
-      password 
+      password: hashedPassword
     });
     const savedUser = await newUser.save();
-    res.status(201).json({ message: "User registered successfully", user: savedUser });
+    const token = await createAccessToken({ id: savedUser._id });
+    res.cookie("token", token)
+
+    res.status(201).json({ 
+      id: savedUser._id,
+      username: savedUser.username,
+      email: savedUser.email,
+      createdAt: savedUser.createdAt,
+      updatedAt: savedUser.updatedAt 
+    });
+
   } catch (error) {
-    console.log(error)
-    res.status(500).json({ message: "Error registering user" });
+    res.status(500).json({ message: error.message });
   }
 };
 
