@@ -13,16 +13,16 @@ export const register = async (req, res) => {
       email, 
       password: hashedPassword
     });
-    const savedUser = await newUser.save();
-    const token = await createAccessToken({ id: savedUser._id });
+    const userSaved = await newUser.save();
+    const token = await createAccessToken({ id: userSaved._id });
     res.cookie("token", token)
 
     res.status(201).json({ 
-      id: savedUser._id,
-      username: savedUser.username,
-      email: savedUser.email,
-      createdAt: savedUser.createdAt,
-      updatedAt: savedUser.updatedAt 
+      id: userSaved._id,
+      username: userSaved.username,
+      email: userSaved.email,
+      createdAt: userSaved.createdAt,
+      updatedAt: userSaved.updatedAt 
     });
 
   } catch (error) {
@@ -30,6 +30,33 @@ export const register = async (req, res) => {
   }
 };
 
-export const login = (req, res) => {
-  res.send("Login endpoint");
+export const login = async(req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const userFound = await User.findOne({ email });
+    if (!userFound) return res.status(400).json({ message: "User not found" });
+
+    const isMatch = await bcrypt.compare(password, userFound.password);
+    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+
+    const token = await createAccessToken({ id: userFound._id });
+    res.cookie("token", token)
+
+    res.status(201).json({ 
+      id: userFound._id,
+      username: userFound.username,
+      email: userFound.email,
+      createdAt: userFound.createdAt,
+      updatedAt: userFound.updatedAt 
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
+
+export const logout = (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({ message: "Logged out successfully" });
+}
