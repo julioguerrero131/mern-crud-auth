@@ -33,7 +33,7 @@ export default function RegisterPage() {
                 className="bg-zinc-700 text-white px-4 py-2 rounded-md mb-4"
             />
         
-            <button type="submit" className="border border-zinc-700 p-2 rounded-md mt-4">
+            <button type="submit" className="p-2 rounded-md mt-4 border border-zinc-700 hover:bg-zinc-700 transition-colors">
                 Register
             </button>
         </form>
