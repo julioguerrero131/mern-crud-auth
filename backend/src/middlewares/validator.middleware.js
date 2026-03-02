@@ -6,6 +6,7 @@ export const validateSchema = (schema) => (req, res, next) => {
     // res.status(400).json({ 
     //   error: error.issues.map((issue) => issue.message) 
     // });
-    res.status(400).json(error.issues);
+    const errorsList = error.issues.map((issue) => issue.message);
+    res.status(400).json({ message: errorsList });
   }
 } 
