@@ -1,4 +1,9 @@
-import { registerRequest, loginRequest, verifyRequest } from "../api/auth.js";
+import {
+  registerRequest,
+  loginRequest,
+  verifyRequest,
+  logoutRequest,
+} from "../api/auth.js";
 import { useState, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
 
@@ -32,9 +37,22 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data);
       setIsAuthenticated(true);
     } catch (error) {
-      setErrors(error.response.data.message || ["An error occurred during login."]);
+      setErrors(
+        error.response.data.message || ["An error occurred during login."],
+      );
     } finally {
       setLoading(false);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      const res = await logoutRequest();
+      setIsAuthenticated(false);
+      setUser(null);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -77,10 +95,11 @@ export const AuthProvider = ({ children }) => {
       value={{
         signup,
         signin,
+        logout,
         user,
         isAuthenticated,
         loading,
-        errors
+        errors,
       }}
     >
       {children}

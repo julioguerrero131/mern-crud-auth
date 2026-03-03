@@ -11,7 +11,11 @@ export default function TasksPage() {
   
 
   if (tasks.length === 0) {
-    return <div id="Empty">No hay tareas para mostrar. ¡Agrega una!</div>;
+    return (
+      <div className="flex items-center justify-center h-[calc(100vh-100px)]">
+        No tasks yet...Add one!
+      </div>
+    );
   }
 
   return (

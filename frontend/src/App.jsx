@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router"
 import { AuthProvider } from "./context/AuthProvider"
 import { TaskProvider } from "./context/TaskProvider"
 
+import Navbar from "./components/Navbar"
+
 import RegisterPage from "./pages/RegisterPage"
 import LoginPage from "./pages/LoginPage"
 import HomePage from "./pages/HomePage"
@@ -15,6 +17,8 @@ function App() {
     <AuthProvider>
       <TaskProvider>
         <BrowserRouter>
+          <Navbar />
+
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
