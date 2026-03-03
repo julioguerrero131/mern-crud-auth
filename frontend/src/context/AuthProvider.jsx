@@ -1,7 +1,6 @@
-import { registerRequest, loginRequest } from "../api/auth.js";
+import { registerRequest, loginRequest, verifyRequest } from "../api/auth.js";
 import { useState, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
-import { verifyRequest } from "../api/auth.js";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
