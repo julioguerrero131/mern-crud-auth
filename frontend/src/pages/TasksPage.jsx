@@ -1,7 +1,27 @@
-import React from 'react'
+import { useTask } from "../context/TaskContext"
+import { useEffect } from "react";
+
 
 export default function TasksPage() {
+  const { tasks, loadTasks } = useTask();
+
+  useEffect(() => {
+    loadTasks();
+  }, []);
+  
+
+  if (tasks.length === 0) {
+    return <div id="Empty">No hay tareas para mostrar. ¡Agrega una!</div>;
+  }
+
   return (
-    <div>TasksPage</div>
-  )
+    <div>
+      {tasks.map((task) => (
+        <div key={task._id}>
+          <h1>{task.title}</h1>
+          <p>{task.description}</p>
+        </div>
+      ))}
+    </div>
+  );
 }
