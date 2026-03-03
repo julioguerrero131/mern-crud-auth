@@ -1,32 +1,42 @@
 import { registerRequest, loginRequest } from "../api/auth.js";
 import { useState, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
+import { verifyRequest } from "../api/auth.js";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errors, setErrors] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const signup = async (user) => {
-    await registerRequest(user)
-      .then((res) => {
-        setUser(res.data);
-        setIsAuthenticated(true);
-      })
-      .catch((err) => {
-        setErrors(err.response.data.message);
-      });
+    try {
+      setLoading(true);
+
+      const res = await registerRequest(user);
+      setUser(res.data);
+      setIsAuthenticated(true);
+    } catch (error) {
+      setErrors(
+        error.response.data.message || ["An error occurred during signup."],
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   const signin = async (user) => {
-    await loginRequest(user)
-      .then((res) => {
-        setUser(res.data);
-        setIsAuthenticated(true);
-      })
-      .catch((err) => {
-        setErrors(err.response.data.message);
-      });
+    try {
+      setLoading(true);
+
+      const res = await loginRequest(user);
+      setUser(res.data);
+      setIsAuthenticated(true);
+    } catch (error) {
+      setErrors(error.response.data.message || ["An error occurred during login."]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -38,6 +48,31 @@ export const AuthProvider = ({ children }) => {
     }
   }, [errors]);
 
+  useEffect(() => {
+    const checkLogin = async () => {
+      try {
+        setLoading(true);
+
+        const res = await verifyRequest();
+        if (res.data) {
+          setUser(res.data);
+          setIsAuthenticated(true);
+        } else {
+          setUser(null);
+          setIsAuthenticated(false);
+        }
+      } catch (error) {
+        console.error("Error verifying token:", error);
+        setUser(null);
+        setIsAuthenticated(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkLogin();
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
@@ -45,6 +80,7 @@ export const AuthProvider = ({ children }) => {
         signin,
         user,
         isAuthenticated,
+        loading,
         errors
       }}
     >
