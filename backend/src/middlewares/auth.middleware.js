@@ -6,9 +6,9 @@ export const authRequired = (req, res, next) => {
         const { token } = req.cookies;
         if (!token) return res.status(401).json({ message: "Unauthorized, no token provided" });
         
-        jwt.verify(token, TOKEN_SECRET, (err, decoded) => {
+        jwt.verify(token, TOKEN_SECRET, (err, user) => {
             if (err) return res.status(401).json({ message: "Unauthorized, invalid token" });
-            req.user = decoded;
+            req.user = user;
             next();
         });
     } catch (error) {
