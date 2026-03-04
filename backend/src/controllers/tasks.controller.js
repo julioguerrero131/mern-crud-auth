@@ -48,7 +48,7 @@ export const updateTask = async (req, res) => {
       req.body, 
       { new: true }
     );
-    if (!task || taskCheck.user.toString() !== req.user.id)
+    if (!task || task.user.toString() !== req.user.id)
       return res.status(404).json({
         message: "Task not found",
       });
