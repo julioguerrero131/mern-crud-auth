@@ -1,12 +1,14 @@
+import { useTask } from "../context/TaskContext";
+
 export default function TaskCard({ task }) {
-  console.log(task);
+  const { deleteTask } = useTask()
 
   return (
     <div className="flex flex-col bg-zinc-900 p-5 rounded-lg shadow-lg m-5">
       <header className="flex justify-between">
         <h1 className="text-lg">{task.title}</h1>
         <div className="flex gap-x-5 items-center">
-          <button>delete</button>
+          <button onClick={() => {deleteTask(task._id);}}>delete</button>
           <button>edit</button>
         </div>
       </header>

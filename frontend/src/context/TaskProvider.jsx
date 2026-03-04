@@ -2,6 +2,7 @@ import { TaskContext } from "./TaskContext";
 import { useState } from "react";
 import { 
   CreateTaskRequest, 
+  deleteTaskRequest, 
   getTasksRequest,
 } from "../api/tasks";
 
@@ -27,12 +28,24 @@ export function TaskProvider({ children }) {
     }
   }
 
+  const deleteTask = async (id) => {
+    try {
+      const res = await deleteTaskRequest(id);
+      console.log(res)
+      if (res.status === 200 || res.status === 204)
+        setTasks(tasks.filter((task) => task._id !== id));
+    } catch(error) {
+      console.log(error)
+    }
+  }
+
   return (
     <TaskContext.Provider
       value={{
         tasks,
         loadTasks,
         createTask,
+        deleteTask,
       }}
     >
       {children}
