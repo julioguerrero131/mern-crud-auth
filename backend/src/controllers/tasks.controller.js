@@ -43,11 +43,9 @@ export const createTask = async (req, res) => {
 
 export const updateTask = async (req, res) => {
   try {
-    const task = await Task.findByIdAndUpdate(
-      req.params.id, 
-      req.body, 
-      { new: true }
-    );
+    const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
+      returnDocument: "after",
+    });
     if (!task || task.user.toString() !== req.user.id)
       return res.status(404).json({
         message: "Task not found",
