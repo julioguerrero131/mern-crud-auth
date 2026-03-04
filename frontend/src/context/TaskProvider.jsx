@@ -4,6 +4,8 @@ import {
   CreateTaskRequest, 
   deleteTaskRequest, 
   getTasksRequest,
+  getTaskRequest,
+  updateTaskRequest,
 } from "../api/tasks";
 
 export function TaskProvider({ children }) {
@@ -13,7 +15,15 @@ export function TaskProvider({ children }) {
     try {
       const res = await getTasksRequest();
       setTasks(res.data);
-      console.log(res.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const getTask = async (id) => {
+    try {
+      const res = await getTaskRequest(id);
+      return res.data;
     } catch (error) {
       console.log(error)
     }
@@ -21,8 +31,7 @@ export function TaskProvider({ children }) {
 
   const createTask = async (task) => {
     try {
-      const res = await CreateTaskRequest(task);
-      console.log(res)
+      await CreateTaskRequest(task);
     } catch(error) {
       console.log(error)
     }
@@ -31,10 +40,18 @@ export function TaskProvider({ children }) {
   const deleteTask = async (id) => {
     try {
       const res = await deleteTaskRequest(id);
-      console.log(res)
       if (res.status === 200 || res.status === 204)
         setTasks(tasks.filter((task) => task._id !== id));
     } catch(error) {
+      console.log(error)
+    }
+  }
+
+  const updateTask = async (id, task) => {
+    try {
+      const res = await updateTaskRequest(id, task);
+      console.log(res)
+    } catch (error) {
       console.log(error)
     }
   }
@@ -44,8 +61,10 @@ export function TaskProvider({ children }) {
       value={{
         tasks,
         loadTasks,
+        getTask,
         createTask,
         deleteTask,
+        updateTask,
       }}
     >
       {children}
